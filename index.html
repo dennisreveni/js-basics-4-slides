@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>JavaScript basics (Functions)</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h2>Функции высшего порядка</h2>
+				</section>
+
+				<section>
+          <p>
+Суммирование числового промежутка – это не циклы и счётчики. Это суммы и промежутки.
+          </p>
+          <pre><code data-trim>
+var total = 0, count = 1;
+while (count <= 10) {
+  total += count;
+  count += 1;
+}
+console.log(total);
+          </code></pre>
+
+          <pre><code data-trim>
+console.log(sum(range(1, 10)));
+          </code></pre>
+				</section>
+
+        <section>
+          <p>
+Второй натурой программиста должно стать умение замечать, когда понятие умоляет придумать для него новое слово и вынести в абстракцию.
+          </p>
+        </section>
+
+        <section>
+          <pre><code data-trim>
+var array = [1, 2, 3];
+for (var i = 0; i < array.length; i++) {
+  var current = array[i];
+  console.log(current);
+}
+          </code></pre>
+
+          <pre><code data-trim>
+function logEach(array) {
+  for (var i = 0; i < array.length; i++)
+    console.log(array[i]);
+}
+          </code></pre>
+
+          <pre><code data-trim>
+function forEach(array, action) {
+  for (var i = 0; i < array.length; i++)
+    action(array[i]);
+}
+
+forEach(["log", "this", "out"], console.log);
+          </code></pre>
+
+          <pre><code data-trim>
+["log", "this", "out"].forEach(console.log);
+          </code></pre>
+
+        </section>
+
+				<section>
+          <pre><code data-trim>
+for(var s = 0; s < students.length; s++) {
+  for(homeWork in homeWorks) {
+    for(var g = 0; g < githubResults.length; g++) {
+      if (githubResults[g].repo === homeWorks[homeWork]) {
+        if (githubResults[g].build.hasOwnProperty(students[s].Github)) {
+          if (githubResults[g].build[students[s].Github] === 'success') {
+            students[s][homeWork] = '✓';
+          } else {
+            students[s][homeWork] = '✗';
+          }
+        } else {
+          students[s][homeWork] = '-';
+        }
+      }
+    }
+  }
+}
+          </code></pre>
+
+          <pre><code data-trim>
+students.forEach(function(student) {
+  homeworks.forEach(function(hw) {
+    student[hw] = getStudentResult(student, hw);
+  });
+});
+          </code></pre>
+
+				</section>
+
+        <section>
+          <h3>Функции высшего порядка</h3>
+          <p>
+          Функции, оперирующие другими функциями — либо принимая их в качестве аргументов, либо возвращая их, называются
+          <a href="https://ru.wikipedia.org/wiki/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8F_%D0%B2%D1%8B%D1%81%D1%88%D0%B5%D0%B3%D0%BE_%D0%BF%D0%BE%D1%80%D1%8F%D0%B4%D0%BA%D0%B0">функциями высшего порядка</a>.
+          </p>
+        </section>
+
+        <section>
+          <h3>Пример</h3>
+          <pre><code data-trim>
+function verbose(f) {
+  return function(arg) {
+    console.log("calling with", arg);
+    var val = f(arg);
+    console.log("called with", arg, "- got", val);
+    return val;
+  };
+}
+
+verbose(Math.sqrt)(9);                  // calling with 9
+                                        // called with 9 - got 3
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Более живой пример</h3>
+          <pre><code data-trim>
+describe("squaresOfMax", function() {
+  it("(1, 2, 3)", function() {
+    expect(squaresOfMax(1, 2, 3)).toEqual(13);
+  });
+});
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>arguments и apply</h3>
+          <pre><code data-trim>
+function verbose(f) {
+  return function() {
+    console.log("calling with", arguments);
+    var val = f.apply(null, arguments);
+    console.log("called with", arguments, "- got", val);
+    return val;
+  };
+}
+
+verbose(Math.max)(24, 42, 30);  // calling with [24, 42, 30]
+                                // called with [24, 42, 30] - got 42
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>map</h3>
+          <img src="/images/fp_map.png" alt="" />
+          <pre><code data-trim>
+[16, 9, 4].map(Math.sqrt);                    // [4, 3, 2]
+
+[4, 3, 2].map(function(n) { return n * n });  // [16, 9, 4]
+
+[4, 3, 2].map(function(n) { n * n });  // [undef..., undef.., u...]
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>reduce</h3>
+          <img src="/images/fp_reduce.png" alt="" />
+          <pre><code data-trim>
+[16, 25, -1, 8].reduce(function(max, n) {
+  return max < n ? n : max;
+});                                           // 25
+
+var plus = function(a, b) { return a + b; }
+
+[16, 25, -1, 8].reduce(plus);                 // 48
+          </code></pre>
+        </section>
+
+        <section>
+          <p>количество вхождений</p>
+          <pre><code data-trim>
+[5, 3, 3, 2, 2, 4, 2, 1, 5, 4].reduce(function(acc, n) {
+  acc[n] = acc[n] || 0;
+  acc[n]++;
+  return acc;
+}, {});                   // {1: 1, 2: 3, 3: 2, 4: 2, 5: 2}
+          </code></pre>
+        </section>
+
+
+        <section>
+          <p>уникальные значения</p>
+          <pre><code data-trim>
+[5, 3, 3, 2, 2, 4, 2, 1, 5, 4].reduce(function(acc, n) {
+  if (acc.indexOf(n) < 0) acc.push(n);
+  return acc;
+}, []);                  // [5, 3, 2, 4, 1]
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>filter</h3>
+          <img src="/images/fp_map.png" alt="" />
+          <pre><code data-trim>
+[1, 2, 3, 4, 5].filter(function(n) {
+  return n % 2 !== 0;
+});                                           // [1, 3, 5]
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Связывание (bind)</h3>
+          <pre><code data-trim>
+function multiply(a, b) { return a * b; }
+
+var double = multiply.bind(null, 2);
+console.log(double)                           // [Function]
+console.log(double(21))                       // 42
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code style="max-height: initial">
+function getResult(allResults, student, topic) {
+  switch(allResults[topic][student.Github]) {
+    case 'success': return '\u2713';
+    case 'failure': return '\u2717';
+    default: return '-';
+  }
+}
+
+function addHomeWorkResults(students, homeWorks, githubResults) {
+  var getStudentResult = getResult.bind(null,
+    homeworkResults(githubResults, homeWorks));
+
+  students.forEach(function(student) {
+    Object.keys(homeWorks).forEach(function(homeWork) {
+      student[homeWork] = getStudentResult(student, homeWork);
+    });
+  });
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Ссылки</h3>
+          <a href="http://eloquentjavascript.net/05_higher_order.html">http://eloquentjavascript.net/05_higher_order.html</a><br />
+          <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Function/apply">Function.prototype.apply()</a><br />
+          <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">Function.prototype.bind()</a>
+        </section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
